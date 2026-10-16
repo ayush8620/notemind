@@ -67,3 +67,7 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md). Ideas: flashc
 ## 📜 License
 This project is licensed under the **MIT License** – see [LICENSE](LICENSE).
 The Qwen2.5 model is licensed under Apache-2.0 by Alibaba Cloud.
+
+
+## GPU compatibility
+NoteMind auto-picks the model: `q4f16_1` if your GPU supports `shader-f16`, otherwise `q4f32_1`. Devices without WebGPU get a clear message.

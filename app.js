@@ -1,7 +1,9 @@
 // NoteMind – by Ayush Yadav – MIT License
 import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
-const MODEL = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
+const MODEL_F16 = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
+const MODEL_F32 = "Qwen2.5-0.5B-Instruct-q4f32_1-MLC";
+let MODEL = MODEL_F16;
 const $ = (id) => document.getElementById(id);
 let engine = null, busy = false, stop = false;
 
@@ -18,6 +20,16 @@ $("notes").addEventListener("input", () => {
 
 $("loadBtn").onclick = async () => {
   $("loadBtn").disabled = true;
+  let adapter = null;
+  try { adapter = await navigator.gpu?.requestAdapter(); } catch {}
+  if (!adapter) {
+    $("status").textContent = "This device has no WebGPU. Open on a laptop/desktop Chrome or Edge.";
+    $("gpuWarn").classList.remove("hidden");
+    $("loadBtn").disabled = false;
+    return;
+  }
+  MODEL = adapter.features.has("shader-f16") ? MODEL_F16 : MODEL_F32;
+  $("status").textContent = "Loading " + MODEL + " ...";
   try {
     engine = await webllm.CreateMLCEngine(MODEL, {
       initProgressCallback: (p) => {
@@ -29,7 +41,14 @@ $("loadBtn").onclick = async () => {
     $("status").textContent = "✅ Model ready: " + MODEL;
     $("loadBtn").textContent = "Model Loaded";
   } catch (e) {
-    $("status").textContent = "❌ Failed to load model: " + e.message;
+    engine = null;
+    const m = String(e?.message || e);
+    let why = "Something went wrong while loading the model.";
+    if (/f16|ShaderModule|WGSL/i.test(m)) why = "Your GPU could not run the model's shaders.";
+    else if (/fetch|network|cache|quota/i.test(m)) why = "Model download blocked or network issue, check internet / try another network.";
+    else if (/memory|OOM|buffer/i.test(m)) why = "Not enough GPU memory on this device.";
+    $("bar").style.width = "0%";
+    $("status").textContent = "❌ " + why + " Click Load Model to retry. (Details: " + m.split("\n")[0] + ")";
     $("loadBtn").disabled = false;
   }
 };
