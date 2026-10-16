@@ -71,3 +71,10 @@ The Qwen2.5 model is licensed under Apache-2.0 by Alibaba Cloud.
 
 ## GPU compatibility
 NoteMind auto-picks the model: `q4f16_1` if your GPU supports `shader-f16`, otherwise `q4f32_1`. Devices without WebGPU get a clear message.
+
+## Cloud fallback (backend)
+If WebGPU or the model download fails (or you tick **Use cloud AI**), NoteMind calls `/api/chat`, a Vercel serverless function that forwards the request to Groq's OpenAI-compatible API (`https://api.groq.com/openai/v1/chat/completions`).
+
+- Default model: **openai/gpt-oss-20b** (open-weight, Apache-2.0). Automatic fallback: **qwen/qwen3.8-27b**. Override with the `GROQ_MODEL` env var.
+- Set `GROQ_API_KEY` in Vercel (Project → Settings → Environment Variables). The key is never stored in the repo.
+- In cloud mode, notes are sent to the server/Groq; in WebGPU mode they stay on your device.

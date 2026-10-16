@@ -16,6 +16,7 @@
     <div class="row"><h2>1. Load the AI model</h2><button id="loadBtn" class="primary">Load Model (~400 MB, once)</button></div>
     <div class="progress"><div id="bar"></div></div>
     <p id="status" class="muted">Model not loaded. Runs locally using WebGPU — your notes never leave your device.</p>
+    <label class="muted"><input type="checkbox" id="cloudToggle"> ☁️ Use cloud AI (no GPU needed)</label>
     <p id="gpuWarn" class="warn hidden">⚠️ WebGPU is not supported in this browser. Please use a recent Chrome or Edge (desktop) with WebGPU enabled.</p>
   </section>
   <section class="card">

@@ -5,13 +5,15 @@ const MODEL_F16 = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
 const MODEL_F32 = "Qwen2.5-0.5B-Instruct-q4f32_1-MLC";
 let MODEL = MODEL_F16;
 const $ = (id) => document.getElementById(id);
-let engine = null, busy = false, stop = false;
+let engine = null, busy = false, stop = false, cloud = false;
+const setCloud = (on, why) => { cloud = on; const t = $("cloudToggle"); if (t) t.checked = on; if (on) $("status").textContent = "☁️ Using cloud AI via Groq (no GPU needed)" + (why ? " – " + why : ""); };
+$("cloudToggle")?.addEventListener("change", (e) => setCloud(e.target.checked));
 
 if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 const hasGPU = !!navigator.gpu;
-if (!hasGPU) { $("gpuWarn").classList.remove("hidden"); $("loadBtn").disabled = true; }
+if (!hasGPU) { $("gpuWarn").classList.remove("hidden"); setCloud(true, "WebGPU not available"); }
 
 $("notes").addEventListener("input", () => {
   const n = $("notes").value.trim().split(/\s+/).filter(Boolean).length;
@@ -24,6 +26,7 @@ $("loadBtn").onclick = async () => {
   try { adapter = await navigator.gpu?.requestAdapter(); } catch {}
   if (!adapter) {
     $("status").textContent = "This device has no WebGPU. Open on a laptop/desktop Chrome or Edge.";
+    setCloud(true, "this device has no WebGPU");
     $("gpuWarn").classList.remove("hidden");
     $("loadBtn").disabled = false;
     return;
@@ -50,6 +53,7 @@ $("loadBtn").onclick = async () => {
     $("bar").style.width = "0%";
     $("status").textContent = "❌ " + why + " Click Load Model to retry. (Details: " + m.split("\n")[0] + ")";
     $("loadBtn").disabled = false;
+    setCloud(true, why);
   }
 };
 
@@ -82,8 +86,7 @@ document.querySelectorAll("[data-task]").forEach((b) => (b.onclick = () => run(b
 
 async function run(task) {
   const notes = $("notes").value.trim();
-  if (!hasGPU) return alert("WebGPU not supported in this browser.");
-  if (!engine) return alert("Please load the model first.");
+  if (!cloud && !engine) return alert("Please load the model first, or tick 'Use cloud AI'.");
   if (!notes) return alert("Please paste or upload some notes.");
   if (busy) return;
   busy = true; stop = false;
@@ -93,21 +96,32 @@ async function run(task) {
   $("output").textContent = "Thinking...";
   let text = "";
   try {
-    const chunks = await engine.chat.completions.create({
-      stream: true, temperature: task === "quiz" ? 0.4 : 0.6, max_tokens: 900,
-      messages: [
-        { role: "system", content: "You are NoteMind, a helpful study assistant." },
-        { role: "user", content: `${instr}\n\nNOTES:\n${notes.slice(0, 6000)}` },
-      ],
-    });
-    for await (const c of chunks) {
-      if (stop) break;
-      text += c.choices[0]?.delta?.content || "";
-      $("output").textContent = text;
-    }
+    const messages = [
+      { role: "system", content: "You are NoteMind, a helpful study assistant." },
+      { role: "user", content: `${instr}\n\nNOTES:\n${notes.slice(0, 6000)}` },
+    ];
+    const text = await generate(messages, task === "quiz" ? 0.4 : 0.6, (t) => ($("output").textContent = t));
     if (task === "quiz") renderQuiz(text);
   } catch (e) { $("output").textContent = "Error: " + e.message; }
   busy = false;
+}
+
+async function generate(messages, temperature, onText) {
+  if (cloud || !engine) {
+    const r = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages, max_tokens: 900, temperature }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || "Cloud AI error " + r.status);
+    onText(j.text); return j.text;
+  }
+  let text = "";
+  const chunks = await engine.chat.completions.create({ stream: true, temperature, max_tokens: 900, messages });
+  for await (const c of chunks) {
+    if (stop) break;
+    text += c.choices[0]?.delta?.content || "";
+    onText(text);
+  }
+  return text;
 }
 
 function renderQuiz(raw) {
