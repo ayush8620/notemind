@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NoteMind – AI Smart Notes Summarizer & Quiz Generator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand"><span class="logo">🧠</span><div><h1>NoteMind</h1><p>AI Smart Notes Summarizer &amp; Quiz Generator — 100% in your browser</p></div></div>
+  <span class="badge">Open-source · Qwen2.5-0.5B · WebLLM</span>
+</header>
+<main>
+  <section class="card">
+    <div class="row"><h2>1. Load the AI model</h2><button id="loadBtn" class="primary">Load Model (~400 MB, once)</button></div>
+    <div class="progress"><div id="bar"></div></div>
+    <p id="status" class="muted">Model not loaded. Runs locally using WebGPU — your notes never leave your device.</p>
+    <p id="gpuWarn" class="warn hidden">⚠️ WebGPU is not supported in this browser. Please use a recent Chrome or Edge (desktop) with WebGPU enabled.</p>
+  </section>
+  <section class="card">
+    <div class="row"><h2>2. Your notes</h2>
+      <label class="file">📄 Upload .txt / .pdf<input type="file" id="fileIn" accept=".txt,.pdf,text/plain,application/pdf"></label></div>
+    <textarea id="notes" placeholder="Paste your lecture notes, textbook paragraph or article here..."></textarea>
+    <p id="count" class="muted">0 words</p>
+    <div class="actions">
+      <button data-task="summary">📝 Summarize</button>
+      <button data-task="terms">🔑 Key Terms</button>
+      <button data-task="quiz">❓ 5-Question Quiz</button>
+      <button data-task="explain">💡 Explain Simply</button>
+      <button id="stopBtn" class="ghost">⏹ Stop</button>
+    </div>
+  </section>
+  <section class="card">
+    <h2 id="outTitle">3. Output</h2>
+    <div id="output" class="output muted">Results will stream here.</div>
+    <div id="quiz"></div>
+  </section>
+</main>
+<footer>Made by <b>Ayush Yadav</b> · Hacktoberfest Hack Day × WikiClub Tech UIT 2026 · MIT License</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

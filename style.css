@@ -1,0 +1,19 @@
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Segoe UI,sans-serif;background:linear-gradient(135deg,#0f172a,#1e1b4b);color:#e2e8f0;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:22px 5vw}
+.brand{display:flex;gap:14px;align-items:center}.logo{font-size:42px}h1{margin:0;font-size:28px;background:linear-gradient(90deg,#a78bfa,#38bdf8);-webkit-background-clip:text;color:transparent}
+header p{margin:2px 0 0;color:#94a3b8}.badge{background:#312e81;padding:6px 12px;border-radius:999px;font-size:13px}
+main{max-width:960px;margin:0 auto;padding:0 5vw 30px;display:grid;gap:18px}
+.card{background:rgba(30,41,59,.75);border:1px solid #334155;border-radius:16px;padding:20px;backdrop-filter:blur(6px)}
+h2{margin:0 0 10px;font-size:18px}.row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+button,.file{background:#334155;color:#e2e8f0;border:1px solid #475569;padding:10px 16px;border-radius:10px;cursor:pointer;font-size:15px;transition:.2s}
+button:hover,.file:hover{background:#4c1d95;border-color:#a78bfa}button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:linear-gradient(90deg,#7c3aed,#0284c7);border:none}.ghost{background:transparent}
+.file input{display:none}
+textarea{width:100%;min-height:180px;background:#0f172a;color:#e2e8f0;border:1px solid #475569;border-radius:12px;padding:14px;font-size:15px;resize:vertical}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.muted{color:#94a3b8;font-size:14px}.warn{color:#fbbf24}.hidden{display:none}
+.progress{height:10px;background:#0f172a;border-radius:99px;overflow:hidden;margin:10px 0}#bar{height:100%;width:0;background:linear-gradient(90deg,#a78bfa,#38bdf8);transition:width .3s}
+.output{white-space:pre-wrap;line-height:1.6;background:#0f172a;border-radius:12px;padding:14px;min-height:80px}
+.q{background:#0f172a;border-radius:12px;padding:14px;margin-top:12px}.q p{margin:0 0 8px;font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}.opt.correct{background:#166534;border-color:#22c55e}.opt.wrong{background:#7f1d1d;border-color:#ef4444}
+.score{margin-top:14px;font-size:18px;font-weight:700;color:#a7f3d0}
+footer{text-align:center;padding:20px;color:#94a3b8;font-size:14px}
