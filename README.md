@@ -3,6 +3,8 @@
 Built for **Hacktoberfest Hack Day × WikiClub Tech UIT – Edition 1.0** · Challenge: **Best Open-Source AI Project**
 Author: **Ayush Yadav**
 
+🔗 **Live demo:** https://notemind-vert.vercel.app · **Repo:** https://github.com/ayush8620/notemind
+
 ![NoteMind screenshot](screenshot.png)
 
 ## ❓ Problem
@@ -42,8 +44,25 @@ python3 -m http.server 8000   # any static server works
 Open http://localhost:8000 in **Chrome / Edge 113+ (desktop)**, click **Load Model**, paste notes, choose an action.
 Can also be deployed for free on GitHub Pages / Vercel / Netlify (static files only).
 
+## ⚠️ Requirements & Known Limitations
+- Needs a browser with **WebGPU** (desktop Chrome/Edge 113+). Most phones are not supported yet; the app shows a message instead.
+- First load downloads ~400 MB of model weights, so use good Wi-Fi.
+- A 0.5B model is small: summaries and quizzes are short and can sometimes be inaccurate. Check important facts.
+
+## 🏗 Built During the Event
+This repository was created and all code was written on **16 Oct 2026** during Hacktoberfest Hack Day (UIT Prayagraj). No earlier project code was reused. Open-source libraries (WebLLM, PDF.js) are loaded from CDNs.
+
+## 🤝 AI Tools Transparency
+An AI coding assistant helped with parts of the code and documentation. All code was reviewed and understood by the author.
+
+## 🎃 Contributing (Hacktoberfest)
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md). Ideas: flashcards export, more languages, larger-model selector, dark mode.
+
+## 👥 Team
+- **Ayush Yadav** (solo): idea, frontend, AI integration, docs
+
 ## 📁 Files
-`index.html` · `style.css` · `app.js` · `README.md` · `LICENSE` · `screenshot.png`
+`index.html` · `style.css` · `app.js` · `README.md` · `CONTRIBUTING.md` · `LICENSE` · `screenshot.png`
 
 ## 📜 License
 This project is licensed under the **MIT License** – see [LICENSE](LICENSE).
